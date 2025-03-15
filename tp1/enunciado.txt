@@ -1,0 +1,70 @@
+Delivery
+
+modelamos el camion de una compañia de transporte de materiales de construccion en palets
+El camion tiene una ruta establecida y una cantidad de bahias para estiba.
+Todas las bahias de un camión toleran la misma cantidad de palets apilados.
+
+Al momento de llegar a uno de los destinos de su ruta tiene que poder descargar los palets con ese destino simplemente desapilando.
+Con lo cual al momento de cargar no puede apilarse un palet con destino posterior al que le queda de bajo.
+La carga de un palet se hace solo si hay una bahia que lo acepte
+
+Los palets tienen destino y peso en toneladas.
+Una bahia no tolera apilar mas de 10 toneladas
+
+Al llegar a un destino el camion descarga todos los palets con ese destino 
+luego puede cargar mas palets, 
+y luego queda listo para partir al siguiente destino.
+
+Para sostener este modelo se cuenta con las siguientes entidades:
+(nada de esto se puede modificar)
+
+module Palet ( Palet, newP, destinationP, netP )
+  where
+
+data Palet = Pal String Int deriving (Eq, Show)
+
+newP :: String -> Int -> Palet   -- construye un Palet dada una ciudad de destino y un peso en toneladas
+destinationP :: Palet -> String  -- responde la ciudad destino del palet
+netP :: Palet -> Int             -- responde el peso en toneladas del palet
+
+------------------------
+module Route ( Route, newR, inOrderR )
+  where
+
+data Route = Rou [ String ] deriving (Eq, Show)
+
+newR :: [ String ] -> Route                    -- construye una ruta segun una lista de ciudades
+inOrderR :: Route -> String -> String -> Bool  -- indica si la primer ciudad consultada esta antes que la segunda ciudad en la ruta
+
+------------------------
+module Stack ( Stack, newS, freeCellsS, stackS, netS, holdsS, popS )
+  where
+
+import Palet
+import Route
+
+data Stack = Sta [ Palet ] Int deriving (Eq, Show)
+
+newS :: Int -> Stack                      -- construye una Pila con la capacidad indicada 
+freeCellsS :: Stack -> Int                -- responde la celdas disponibles en la pila
+stackS :: Stack -> Palet -> Stack         -- apila el palet indicado en la pila
+netS :: Stack -> Int                      -- responde el peso neto de los paletes en la pila
+holdsS :: Stack -> Palet -> Route -> Bool -- indica si la pila puede aceptar el palet considerando las ciudades en la ruta
+popS :: Stack -> String -> Stack          -- quita del tope los paletes con destino en la ciudad indicada
+
+------------------------
+module Truck ( Truck, newT, freeCellsT, loadT, unloadT, netT )
+  where
+
+import Palet
+import Stack
+import Route
+
+data Truck = Tru [ Stack ] Route deriving (Eq, Show)
+
+newT :: Int -> Int -> Route -> Truck  -- construye un camion según una cantidad de bahias, la altura de las mismas y una ruta
+freeCellsT :: Truck -> Int            -- responde la celdas disponibles en el camion
+loadT :: Truck -> Palet -> Truck      -- carga un palet en el camion
+unloadT :: Truck -> String -> Truck   -- responde un camion al que se le han descargado los paletes que podían descargarse en la ciudad
+netT :: Truck -> Int                  -- responde el peso neto en toneladas de los paletes en el camion
+
