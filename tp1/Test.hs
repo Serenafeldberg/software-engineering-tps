@@ -56,7 +56,12 @@ t = [ testF(newR []),
       testF (loadT (newT 1 1 (newR ["Cordoba"])) (newP "Rosario" 3)),
       testF (foldl loadT (newT 1 1 (newR ["Cordoba"])) [newP "Cordoba" 3, newP "Cordoba" 3]),
       testF (foldl loadT (newT 1 2 (newR ["Cordoba"])) [newP "Cordoba" 10, newP "Cordoba" 3]),
-      testF (foldl loadT (newT 2 2 (newR ["Cordoba", "Rosario", "Buenos Aires"])) [newP "Cordoba" 3, newP "Cordoba" 3, newP "Rosario" 2, newP "Buenos Aires" 1])
-
+      testF (foldl loadT (newT 2 2 (newR ["Cordoba", "Rosario", "Buenos Aires"])) [newP "Cordoba" 3, newP "Cordoba" 3, newP "Rosario" 2, newP "Buenos Aires" 1]),
+      freeCellsT (unloadT (newT 2 3 (newR ["Cordoba", "Rosario"])) "Rosario") == 6,
+      freeCellsT (unloadT (loadT (loadT (newT 2 3 (newR ["Cordoba", "Rosario"])) (newP "Cordoba" 3)) (newP "Cordoba" 2)) "Cordoba") == 6,
+      freeCellsT (unloadT (loadT (loadT (newT 2 3 (newR ["Cordoba", "Rosario"])) (newP "Rosario" 3)) (newP "Cordoba" 2)) "Rosario") == 4,
+      netT (newT 2 3 (newR ["Cordoba", "Rosario"])) == 0,
+      netT (loadT (newT 2 3 (newR ["Cordoba"])) (newP "Cordoba" 4)) == 4,
+      netT (foldl loadT (newT 1 2 (newR ["Cordoba"])) [newP "Cordoba" 5, newP "Cordoba" 5]) == 10
        ]
 

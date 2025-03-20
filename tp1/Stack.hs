@@ -1,20 +1,13 @@
 module Stack ( Stack, newS, freeCellsS, stackS, netS, holdsS, popS)
   where
-
-import Control.Exception (Exception, throw)
 import Palet
 import Route
-
-data StackException = InvalidCapacityException Int
-                    | InvalidWeightException Int
-                    deriving (Show)
-instance Exception StackException
 
 data Stack = Sta [ Palet ] Int deriving (Eq, Show)
 
 newS :: Int -> Stack                      -- construye una Pila con la capacidad indicada 
 newS num 
-      | num <= 0 = throw (InvalidCapacityException num) -- Si la capacidad es menor o igual a 0 tiro excepción
+      | num <= 0 = error "Capacidad menor o igual a 0"
       | otherwise = Sta [] num
 
 freeCellsS :: Stack -> Int                -- responde la celdas disponibles en la pila
@@ -22,7 +15,7 @@ freeCellsS (Sta palets capacidad) = capacidad - length palets
 
 stackS :: Stack -> Palet -> Stack         -- apila el palet indicado en la pila
 stackS (Sta palets capacidad) palet 
-            | netS (Sta palets capacidad) + netP palet > 10 = throw (InvalidWeightException (netS (Sta palets capacidad) + netP palet)) -- Si el peso del palet + el peso de los palets en la pila supera los 10 toneladas tiro excepción
+            | (netS (Sta palets capacidad) + netP palet) > 10 = error "No se puede agregar el palet, supera el peso máximo" -- Si el peso del palet supera las 10 toneladas tiro excepción
             | length palets < capacidad = Sta (palet : palets) capacidad -- Si hay lugar para el palet lo agrego
             | otherwise = Sta palets capacidad -- Si se llenó la capacidad (length palets == capacidad) NO HAGO NADA
 
