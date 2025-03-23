@@ -65,3 +65,4 @@ t = [ testF(newR []),
       netT (foldl loadT (newT 1 2 (newR ["Cordoba"])) [newP "Cordoba" 5, newP "Cordoba" 5]) == 10
     ]
 
+
