@@ -22,7 +22,7 @@ rutaLarga = newR ["roma", "paris", "mdq" , "berna"]
 s = stackS (stackS (stackS (newS 5) (newP "Rosario" 2)) (newP "Cordoba" 3)) (newP "Cordoba" 1)
 truck = loadT (newT 2 2 (newR ["Cordoba"])) (newP "Cordoba" 3)
 truck2 = newT 2 3 (newR ["Cordoba", "Rosario"])
-truck3 = foldl loadT (newT 2 2 (newR ["Cordoba", "Rosario", "Buenos Aires"])) [newP "Cordoba" 3, newP "Cordoba" 3, newP "Rosario" 2, newP "Buenos Aires" 1]
+
 t = [ testF(newR []), 
       testF(inOrderR rutaCorta "roma" "paris"), 
       inOrderR rutaLarga "roma" "mdq",

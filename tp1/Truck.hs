@@ -37,3 +37,4 @@ holdT (Tru [] route) _ = False
 holdT (Tru (headStack : stacks) route) palet 
     | holdsS headStack palet route = True
     | otherwise = holdT (Tru stacks route) palet 
+
