@@ -6,9 +6,11 @@ import java.util.ArrayList;
 public class Ring {
 
     private Node current;
+    private Integer size;
 
     public Ring() {
         current = new EmptyNode();
+        size = 0;
 
     }
 
@@ -22,12 +24,14 @@ public class Ring {
     }
 
     public Ring add( Object cargo ) {
+        size +=1;
         current = current.add(cargo);
         return this;
     }
 
     public Ring remove() {
-        current = current.remove();
+        size -=1;
+        current = current.remove(size);
         return this;
     }
 }

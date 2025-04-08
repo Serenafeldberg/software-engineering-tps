@@ -107,4 +107,11 @@ public class RingTest {
                                                  .remove()
                                                  .current() );
     }
+
+    @Test void test15() {
+        Ring ring = new Ring().add( "Hola" ).add("Chau").remove().remove();
+
+        assertThrows( Exception.class, () -> ring.current() );
+        assertThrows( Exception.class, () -> ring.next() );
+    }
 }

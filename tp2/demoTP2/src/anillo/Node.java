@@ -1,5 +1,8 @@
 package anillo;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public abstract class Node {
 
     Object data;
@@ -13,27 +16,25 @@ public abstract class Node {
     }
 
     public abstract Node add (Object cargo);
-    public abstract Node remove();
+    public abstract Node remove(Integer size);
     public abstract Node next();
     public abstract Object current();
 
 }
 
 class EmptyNode extends Node {
+
     public EmptyNode( ) {
         super( null );
 
     }
 
     public Node add(Object cargo) {
-        Node one = new NodeOne( cargo );
-        one.prev = one;
-        one.next = one;
+        return new SingleNode( cargo );
 
-        return one;
     }
 
-    public Node remove() {
+    public Node remove(Integer size) {
         return this;
     }
 
@@ -46,13 +47,49 @@ class EmptyNode extends Node {
     }
 }
 
-class NodeOne extends Node {
-    public NodeOne(Object cargo) {
+class SingleNode extends Node{
+
+    public SingleNode(Object cargo){
+        super ( cargo );
+        this.next = this;
+        this.prev = this;
+    }
+
+    public Node add(Object cargo){
+        Node myNode = new MultiNode( this.data );
+        Node newNode = new MultiNode ( cargo );
+
+        myNode.next = newNode;
+        myNode.prev = newNode;
+        newNode.next = myNode;
+        newNode.prev = myNode;
+
+        return newNode;
+        
+    }
+
+    public Node remove(Integer size){
+        return new EmptyNode();
+    }
+
+    public Node next(){
+        return this;
+    }
+
+    public Object current(){
+        return this.data;
+    }
+}
+
+class MultiNode extends Node {
+
+
+    public MultiNode(Object cargo) {
         super( cargo );
     }
 
     public Node add(Object cargo) {
-        Node newNode = new NodeOne( cargo );
+        Node newNode = new MultiNode( cargo );
         newNode.prev = this.prev;
         newNode.next = this;
         this.prev.next = newNode;
@@ -60,13 +97,20 @@ class NodeOne extends Node {
         return newNode;
     }
 
-    public Node remove() {
-        if (this.prev == this) {
-            return new EmptyNode();
-        }
+    public Node remove(Integer size) {
+
+        List<Node> auxList = new ArrayList<>();
+
         this.next.prev = this.prev;
         this.prev.next = this.next;
-        return this.next;
+
+        Integer index = Math.min(size - 1, 1);
+        Node auxNode = new SingleNode(this.next.data);
+
+        auxList.add(auxNode);
+        auxList.add(this.next);
+        
+        return auxList.get(index);
     }
 
     public Node next() {
