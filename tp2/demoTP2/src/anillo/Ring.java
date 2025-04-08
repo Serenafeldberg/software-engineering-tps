@@ -1,37 +1,40 @@
 package anillo;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Stack;
 
 public class Ring {
 
-    private Node current;
-    private Integer size;
+    private Link current;
+    private Stack<Link> stack;
 
     public Ring() {
-        current = new EmptyNode();
-        size = 0;
-
+        current = new NullLink();
+        stack = new Stack<Link>();
+        stack.push(current);
     }
 
     public Ring next() {
-        current = current.next();
+        Link top = stack.peek();
+        current = top.next (current);
         return this;
     }
 
     public Object current() {
-        return current.current();
+        Link top = stack.peek();
+        return top.current (current);
     }
 
     public Ring add( Object cargo ) {
-        size +=1;
-        current = current.add(cargo);
+        Link top = stack.peek();
+        current = top.add (cargo, current);
+        stack.push(current);
         return this;
     }
 
     public Ring remove() {
-        size -=1;
-        current = current.remove(size);
+        Link top = stack.peek();
+        current = top.remove (current);
+        Link removed = stack.pop();
         return this;
     }
 }
