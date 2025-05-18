@@ -40,7 +40,6 @@ public class Player {
             throw new RuntimeException("Player does not contain card");
         }
         boolean playable = card.playAgainst(game.viewCard());
-        System.out.println(card);
         if (playable) {
             cards.remove(card);
             card.plays(game);
@@ -54,8 +53,8 @@ public class Player {
         }
     }
 
-    public void addCards(List<Card> cards) {
-        this.cards.addAll(cards);
+    public void addCard(Card card) {
+        this.cards.add(card);
     }
 
     public Player getNext() {

@@ -92,14 +92,16 @@ class Draw2Card extends Card {
     }
 
     public boolean playAgainst(Card other) {
-        return other.colour().equals(this.colour());
+        return other.colour().equals(this.colour()) || other.getClass().equals(this.getClass());
     }
 
     public void plays(Uno game) {
        if (game.isFlow()){
            game.takeTwo(game.getCurrentPlayer().getNext());
+           game.setCurrentPlayer(game.getCurrentPlayer().getNext());
        } else{
            game.takeTwo(game.getCurrentPlayer().getPrev());
+           game.setCurrentPlayer(game.getCurrentPlayer().getPrev());
        }
     }
 }
@@ -111,7 +113,7 @@ class ReverseCard extends Card {
     }
 
     public boolean playAgainst(Card other) {
-        return other.colour().equals(this.colour());
+        return other.colour().equals(this.colour()) || other.getClass().equals(this.getClass());
     }
 
     public void plays(Uno game) {
@@ -126,7 +128,7 @@ class SkipCard extends Card {
     }
 
     public boolean playAgainst(Card other) {
-        return other.colour().equals(this.colour());
+        return other.colour().equals(this.colour()) || other.getClass().equals(this.getClass());
     }
 
     public void plays(Uno game) {

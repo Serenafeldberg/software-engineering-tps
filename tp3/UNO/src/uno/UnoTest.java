@@ -211,10 +211,85 @@ public class UnoTest {
         assertEquals("red", new Uno(skipDeck, 3, "Sere", "Santi")
                 .plays("Sere", skipRed).viewCard().colour());
         assertEquals("red", new Uno(skipDeck, 3, "Sere", "Santi")
-                .plays("Sere", skipRed).
-                plays("Sere", redOne).viewCard().colour());
+                .plays("Sere", skipRed)
+                .plays("Sere", redOne).viewCard().colour());
         assertEquals(1, new Uno(skipDeck, 3, "Sere", "Santi")
                 .plays("Sere", skipRed)
+                .plays("Sere", redOne).viewCard().number());
+    }
+
+    @Test
+    public void test08SkipCardFails() {
+        List skipDeck = List.of(redZero, redOne, redTwo, skipRed, redFour, redFive, greenFive, blueTwo);
+        assertThrows(Exception.class, ()-> new Uno(skipDeck, 3, "Sere", "Santi")
+                .plays("Sere", skipRed)
+                .plays("Santi", redFive));
+    }
+
+    @Test
+    public void test09SkipCardBigger() {
+        List skipDeck = List.of(redZero, redOne, redTwo, skipRed,
+                redFour, redFive, greenFive,
+                redTwo, skipGreen, greenOne, greenTwo);
+        assertEquals(2, new Uno(skipDeck, 3, "Sere", "Santi", "Juli")
+                .plays("Sere", skipRed)
+                .plays("Juli", skipGreen)
+                .plays("Santi", greenFive)
+                .plays("Juli", greenOne)
+                .takeOne()
+                .plays("Sere", greenTwo).viewCard().number());
+    }
+
+    @Test
+    public void test10Draw2Simple(){
+        List draw2Deck = List.of(redZero, redOne, redTwo, draw2Red,
+                redFour, redFive, greenFive,
+                redTwo, skipGreen,
+                greenOne, greenTwo, redNine, redEight);
+        assertEquals(2, new Uno(draw2Deck, 3, "Sere", "Santi")
+                .plays("Sere", draw2Red)
+                .plays("Sere", redOne)
+                .plays("Santi", redTwo).viewCard().number());
+    }
+
+    @Test
+    public void test11Draw2(){
+        List draw2Deck = List.of(redZero, redOne, redTwo, draw2Red,
+                redFour, redFive, greenFive,
+                redTwo, skipGreen, greenOne,
+                greenTwo, redNine,
+                redEight);
+        assertEquals(9, new Uno(draw2Deck, 3, "Sere", "Santi", "Juli")
+                .plays("Sere", draw2Red)
+                .takeOne()
+                .plays("Juli", redEight)
+                .plays("Sere", redOne)
+                .plays("Santi", redNine).viewCard().number());
+    }
+
+    @Test
+    public void test12ReverseCard () {
+        List reverseDeck = List.of(redZero, redOne, redTwo, reverseRed,
+                redOne, redFive, redSix,
+                reverseRed, redNine, redZero);
+        assertEquals(5 , new Uno(reverseDeck, 3, "Sere", "Santi", "Juli")
+                .plays("Sere", reverseRed)
+                .plays("Juli", reverseRed)
+                .plays("Sere", redTwo)
+                .plays("Santi", redFive).viewCard().number());
+
+    }
+
+    @Test
+    public void test13ReverseCardExtended () {
+        List reverseDeckExtended = List.of(redZero, redOne, reverseRed, reverseRed, redOne, redFive,
+                redSix, blueOne, blueZero, redZero, greenZero,
+                greenOne, reverseRed, reverseRed, blueTwo, yellowOne);
+        assertEquals(1, new Uno(reverseDeckExtended, 5, "Sere", "Santi", "Juli")
+                .plays("Sere", reverseRed)
+                .plays("Juli", reverseRed)
+                .plays("Sere", reverseRed)
+                .plays("Juli", reverseRed)
                 .plays("Sere", redOne).viewCard().number());
     }
 

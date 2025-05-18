@@ -12,13 +12,13 @@ public class Uno {
     HashMap<String, Player> playerMap = new HashMap<>();
     List<Card> remainingCards = new ArrayList<>();
     Player currentPlayer;
-    boolean flow = false;
+    boolean flow = true;
 
 
     public Uno(List<Card> cardDeck, Integer cardsPerPlayer, String... players){
         List<String> playerNames = Arrays.asList(players);
 
-        if (!(cardDeck.size() > cardsPerPlayer * playerNames.size() + 1)){
+        if (!(cardDeck.size() >= cardsPerPlayer * playerNames.size() + 1)){
             throw new RuntimeException("Card Deck not sufficient to play");
         }
 
@@ -41,7 +41,9 @@ public class Uno {
                     playerMap.put(name, new Player(hand));
                 });
 
-        this.remainingCards = cardDeck.subList(currentIndex.get(), cardDeck.size());
+        this.remainingCards = new ArrayList<>(
+                cardDeck.subList(currentIndex.get(), cardDeck.size())
+        );
     }
 
     private void assignPlayers(int n, List<String> playerNames) {
@@ -78,21 +80,24 @@ public class Uno {
         return this;
     }
 
-    public Uno takeOne(){
-        int toTake = Math.min(1, remainingCards.size());
-        List<Card> takenCards = new ArrayList<>(remainingCards.subList(0, toTake)); // deberia ser una carta sola en vez de una lista
-        remainingCards.subList(0, toTake).clear();
-        currentPlayer.addCards(takenCards);
+    public Uno takeOne() {
+        if (remainingCards.isEmpty()) {
+            throw new IllegalStateException("Insufficient cards to play");
+        }
+        Card drawn = remainingCards.remove(0);
+        currentPlayer.addCard(drawn);
         return this;
     }
 
-    public Uno takeTwo(Player player){
+
+    public Uno takeTwo(Player player) {
         int toTake = Math.min(2, remainingCards.size());
-        List<Card> takenCards = new ArrayList<>(remainingCards.subList(0, toTake));
+        List<Card> cardsToTake = new ArrayList<>(remainingCards.subList(0, toTake));
+        cardsToTake.forEach(player::addCard);
         remainingCards.subList(0, toTake).clear();
-        player.addCards(takenCards);
         return this;
     }
+
 
 
     public Player getCurrentPlayer(){
