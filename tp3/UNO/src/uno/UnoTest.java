@@ -1,5 +1,6 @@
 package uno;
 
+//import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -199,10 +200,21 @@ public class UnoTest {
 
     @Test
     public void test06WildCardColour() {
-        List wildDeck = List.of(redZero, redOne, redTwo, wildCard, redFour, redFive, greenFive, blueTwo);
-        assertThrows(Exception.class, ()->new Uno(wildDeck, 3, "Sere", "Santi")
+        List wildDeck = List.of(redZero, redOne, redTwo, wildCard, redFour, redFive, greenFive, blueTwo, greenSix, greenSeven);
+        assertEquals(6, new Uno(wildDeck, 3, "Sere", "Santi")
                 .plays("Sere", wildCard.asGreen())
-                .plays("Santi", redFour));
+                .plays("Santi", redFour)
+                .takeOne()
+                .plays("Sere", greenSeven)
+                .plays("Santi", greenSix)
+                .viewCard().number());
+        assertEquals("green", new Uno(wildDeck, 3, "Sere", "Santi")
+                .plays("Sere", wildCard.asGreen())
+                .plays("Santi", redFour)
+                .takeOne()
+                .plays("Sere", greenSeven)
+                .plays("Santi", greenSix)
+                .viewCard().colour());
     }
 
     @Test
@@ -235,7 +247,7 @@ public class UnoTest {
                 .plays("Sere", skipRed)
                 .plays("Juli", skipGreen)
                 .plays("Santi", greenFive)
-                .plays("Juli", greenOne)
+                .plays("Juli", greenOne.asUno())
                 .takeOne()
                 .plays("Sere", greenTwo).viewCard().number());
     }
@@ -275,7 +287,7 @@ public class UnoTest {
         assertEquals(5 , new Uno(reverseDeck, 3, "Sere", "Santi", "Juli")
                 .plays("Sere", reverseRed)
                 .plays("Juli", reverseRed)
-                .plays("Sere", redTwo)
+                .plays("Sere", redTwo.asUno())
                 .plays("Santi", redFive).viewCard().number());
 
     }
@@ -292,5 +304,45 @@ public class UnoTest {
                 .plays("Juli", reverseRed)
                 .plays("Sere", redOne).viewCard().number());
     }
+
+    @Test
+    public void test14UnoReveal(){
+        List mazoSimple = List.of(redZero, redOne, redTwo, redThree, redFour, redFive, greenFive, blueTwo);
+        assertEquals("Sere", new Uno(mazoSimple, 3, "Sere", "Santi")
+                .plays("Sere", redOne)
+                .plays("Santi", redFive)
+                .plays("Sere", redTwo.asUno())
+                .plays("Santi", redFour.asUno())
+                .plays("Sere", redThree)
+                .winner());
+    }
+
+    @Test
+    public void test15ForgetUnoReveal(){
+        List mazoSimple = List.of(redZero, redOne, redTwo, redThree, redFour, redFive, greenFive, blueTwo, redFive);
+        assertEquals("Santi", new Uno(mazoSimple, 3, "Sere", "Santi")
+                .plays("Sere", redOne)
+                .plays("Santi", redFive)
+                .plays("Sere", redTwo)
+                .plays("Santi", redFour.asUno())
+                .plays("Sere", redFive)
+                .plays("Santi", greenFive)
+                .winner());
+    }
+
+    @Test
+    public void test16GameOver(){
+
+        List mazoSimple = List.of(redZero, redOne, redTwo, redThree, redFour, redFive, greenFive, blueTwo, redFive);
+
+        assertThrows(Exception.class, ()-> new Uno(mazoSimple, 3, "Sere", "Santi")
+                .plays("Sere", redOne)
+                .plays("Santi", redFive)
+                .plays("Sere", redTwo.asUno())
+                .plays("Santi", redFour.asUno())
+                .plays("Sere", redThree)
+                .plays("Santi", greenFive));
+    }
+
 
 }

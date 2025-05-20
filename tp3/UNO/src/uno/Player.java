@@ -7,9 +7,11 @@ public class Player {
     List<Card> cards;
     Player next;
     Player prev;
+    String name;
 
-    public Player(List<Card> cards) {
+    public Player(List<Card> cards, String name) {
         this.cards = cards;
+        this.name = name;
     }
 
     public void setNext(Player next) {
@@ -30,6 +32,7 @@ public class Player {
 
 
     public Player plays (Card card, Uno game){
+
         if (card instanceof ColouredCard){
             if (removeOneWildCard()) {
                 cards.add(card);
@@ -40,17 +43,43 @@ public class Player {
             throw new RuntimeException("Player does not contain card");
         }
         boolean playable = card.playAgainst(game.viewCard());
+
+        // con polimorfismo sale playable como objeto llamamos playable.plays(game, card, this)
         if (playable) {
-            cards.remove(card);
-            card.plays(game);
+
+            if (cards.size() == 2){
+
+                if (card.isCantada()){
+                    cards.remove(card);
+                    card.plays(game);
+                    game.setTopCard(card);
+                }
+                else {
+                    cards.remove(card);
+                    card.plays(game);
+                    game.setTopCard(card);
+                    game.takeTwo(this);
+                }
+            }
+
+            else {
+                cards.remove(card);
+                card.plays(game);
+                game.setTopCard(card);
+            }
         } else{
-            throw new RuntimeException("Card not playable");
+            // levanta dos cartas
+            game.takeTwo(this);
+
         }
-        if (game.isFlow()){
-            return game.getCurrentPlayer().getNext();
-        } else {
-            return game.getCurrentPlayer().getPrev();
+
+        //
+        if (cards.isEmpty()){
+            game.setWinner(name);
         }
+
+        return game.getController().whoIsNext(game);
+
     }
 
     public void addCard(Card card) {
@@ -65,3 +94,4 @@ public class Player {
         return prev;
     }
 }
+

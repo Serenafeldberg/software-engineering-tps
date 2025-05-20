@@ -2,6 +2,7 @@ package uno;
 
 public abstract class Card {
     String colour;
+    boolean cantada;
 
     public Card(String colour) {
         this.colour = colour;
@@ -19,6 +20,14 @@ public abstract class Card {
     public abstract boolean playAgainst(Card other);
     public abstract void plays(Uno game);
 
+    public Card asUno(){
+        cantada = true;
+        return this;
+    }
+
+    public boolean isCantada(){
+        return cantada;
+    }
 
 }
 
@@ -96,13 +105,10 @@ class Draw2Card extends Card {
     }
 
     public void plays(Uno game) {
-       if (game.isFlow()){
-           game.takeTwo(game.getCurrentPlayer().getNext());
-           game.setCurrentPlayer(game.getCurrentPlayer().getNext());
-       } else{
-           game.takeTwo(game.getCurrentPlayer().getPrev());
-           game.setCurrentPlayer(game.getCurrentPlayer().getPrev());
-       }
+
+        game.takeTwo(game.getController().whoIsNext(game));
+        game.setCurrentPlayer(game.getController().whoIsNext(game));
+
     }
 }
 
@@ -117,7 +123,7 @@ class ReverseCard extends Card {
     }
 
     public void plays(Uno game) {
-        game.setFlow(!game.isFlow());
+        game.setController(game.getController().changeController());
     }
 }
 
@@ -132,11 +138,7 @@ class SkipCard extends Card {
     }
 
     public void plays(Uno game) {
-        if (game.isFlow()){
-            game.setCurrentPlayer(game.getCurrentPlayer().getNext());
-        } else{
-            game.setCurrentPlayer(game.getCurrentPlayer().getPrev());
-        }
+        game.setCurrentPlayer(game.getController().whoIsNext(game));
     }
 
 }

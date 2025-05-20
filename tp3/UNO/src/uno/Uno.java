@@ -12,7 +12,10 @@ public class Uno {
     HashMap<String, Player> playerMap = new HashMap<>();
     List<Card> remainingCards = new ArrayList<>();
     Player currentPlayer;
-    boolean flow = true;
+    String winner;
+    boolean endGame = false;
+
+    Controller gameController;
 
 
     public Uno(List<Card> cardDeck, Integer cardsPerPlayer, String... players){
@@ -26,6 +29,7 @@ public class Uno {
         createPlayers(playerNames, cardsPerPlayer, cardDeck);  // Ver de cambiar el nombre porque la funcion tamb reparte
         assignPlayers(playerNames.size(), playerNames);
         currentPlayer = playerMap.get(playerNames.get(0));
+        this.gameController = new RightController();
 
     }
 
@@ -38,12 +42,16 @@ public class Uno {
                     List<Card> hand = new ArrayList<>(cardDeck.subList(start, end));
                     currentIndex.set(end);
 
-                    playerMap.put(name, new Player(hand));
+                    playerMap.put(name, new Player(hand, name));
                 });
 
         this.remainingCards = new ArrayList<>(
                 cardDeck.subList(currentIndex.get(), cardDeck.size())
         );
+
+        //remainingCards.stream().forEach(cardd -> System.out.println(cardd));
+
+
     }
 
     private void assignPlayers(int n, List<String> playerNames) {
@@ -66,21 +74,20 @@ public class Uno {
         return this.topCard;
     }
 
-    public void setFlow(boolean flow){
-        this.flow = flow;
-    }
-
-    public boolean isFlow(){
-        return this.flow;
-    }
-
     public Uno plays(String player1, Card card){
-        currentPlayer = currentPlayer.plays(card, this);
-        this.topCard = card;
-        return this;
+
+        // sale con polimorfismo
+        if (!endGame){
+            currentPlayer = currentPlayer.plays(card, this);
+            return this;
+        }
+
+        throw new RuntimeException("The game is over.");
+
     }
 
     public Uno takeOne() {
+
         if (remainingCards.isEmpty()) {
             throw new IllegalStateException("Insufficient cards to play");
         }
@@ -106,5 +113,26 @@ public class Uno {
 
     public void setCurrentPlayer(Player currentPlayer){
         this.currentPlayer = currentPlayer;
+    }
+
+    public void setTopCard(Card topCard){
+        this.topCard = topCard;
+    }
+
+    public void setWinner(String winner){
+        this.winner = winner;
+        this.endGame = true; // esto haria un new UnoGanado()
+    }
+
+    public String winner(){
+        return winner;
+    }
+
+    public void setController(Controller newController){
+        this.gameController = newController;
+    }
+
+    public Controller getController(){
+        return this.gameController;
     }
 }
