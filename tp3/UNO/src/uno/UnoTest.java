@@ -344,5 +344,77 @@ public class UnoTest {
                 .plays("Santi", greenFive));
     }
 
+    @Test
+    public void test17StartWithDraw2(){
+        List draw2Deck = List.of(draw2Green, redOne, redTwo, draw2Red,
+                redFour, redFive, greenFive,
+                redTwo, skipGreen,
+                greenOne, greenTwo, redNine, redEight);
+        assertEquals(1, new Uno(draw2Deck, 3, "Sere", "Santi")
+                .plays("Santi", greenFive)
+                .plays("Sere", skipGreen)
+                .takeOne()
+                .plays("Sere", greenOne).viewCard().number());
+        assertEquals("green", new Uno(draw2Deck, 3, "Sere", "Santi")
+                .plays("Santi", greenFive)
+                .plays("Sere", skipGreen)
+                .takeOne()
+                .plays("Sere", greenOne).viewCard().colour());
+    }
+
+    @Test
+    public void test18StartWithReverse(){
+        List reverseDeck = List.of(reverseGreen, redOne, redTwo, draw2Red,
+                redFour, redFive, greenFive,
+                redTwo, skipGreen, greenOne,
+                greenTwo, redNine, redEight);
+        assertEquals(2, new Uno(reverseDeck, 3, "Sere", "Santi", "Juli")
+                .plays("Juli", greenOne)
+                .plays("Santi", greenFive)
+                .takeOne()
+                .plays("Sere", greenTwo).viewCard().number());
+        assertEquals("green", new Uno(reverseDeck, 3, "Sere", "Santi", "Juli")
+                .plays("Juli", greenOne)
+                .plays("Santi", greenFive)
+                .takeOne()
+                .plays("Sere", greenTwo).viewCard().colour());
+    }
+
+    @Test
+    public void test19StartWithSkip(){
+        List skipDeck = List.of(skipGreen, redOne, redTwo, draw2Red,
+                redFour, redFive, greenFive,
+                redTwo, skipGreen, greenOne,
+                greenTwo, redNine, redEight);
+        assertEquals(2, new Uno(skipDeck, 3, "Sere", "Santi", "Juli")
+                .plays("Santi", greenFive)
+                .plays("Juli", greenOne)
+                .takeOne()
+                .plays("Sere", greenTwo).viewCard().number());
+        assertEquals("green", new Uno(skipDeck, 3, "Sere", "Santi", "Juli")
+                .plays("Santi", greenFive)
+                .plays("Juli", greenOne)
+                .takeOne()
+                .plays("Sere", greenTwo).viewCard().colour());
+    }
+
+    @Test
+    public void test20StartWithWild(){
+        List wildDeck = List.of(wildCard, redOne, redTwo, draw2Red,
+                redFour, redFive, greenFive,
+                redTwo, skipGreen, greenOne,
+                greenTwo, redNine, redEight);
+        assertEquals(2, new Uno(wildDeck, 3, "Sere", "Santi", "Juli")
+                .startGame("Sere", wildCard.asRed())
+                .plays("Sere", redOne)
+                .plays("Santi", redFour)
+                .plays("Juli", redTwo).viewCard().number());
+        assertEquals("red", new Uno(wildDeck, 3, "Sere", "Santi", "Juli")
+                .startGame("Sere", wildCard.asRed())
+                .plays("Sere", redOne)
+                .plays("Santi", redFour)
+                .plays("Juli", redTwo).viewCard().colour());
+    }
+
 
 }

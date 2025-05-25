@@ -46,26 +46,12 @@ public class Player {
 
         // con polimorfismo sale playable como objeto llamamos playable.plays(game, card, this)
         if (playable) {
+            cards.remove(card);
+            card.plays(game);
+            game.setTopCard(card);
 
-            if (cards.size() == 2){
-
-                if (card.isCantada()){
-                    cards.remove(card);
-                    card.plays(game);
-                    game.setTopCard(card);
-                }
-                else {
-                    cards.remove(card);
-                    card.plays(game);
-                    game.setTopCard(card);
-                    game.takeTwo(this);
-                }
-            }
-
-            else {
-                cards.remove(card);
-                card.plays(game);
-                game.setTopCard(card);
+            if (cards.size() == 1 && !(card.isCantada())) {
+                game.takeTwo(this);
             }
         } else{
             // levanta dos cartas

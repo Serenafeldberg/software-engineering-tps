@@ -30,6 +30,7 @@ public class Uno {
         assignPlayers(playerNames.size(), playerNames);
         currentPlayer = playerMap.get(playerNames.get(0));
         this.gameController = new RightController();
+        this.topCard.startGame(this);
 
     }
 
@@ -134,5 +135,10 @@ public class Uno {
 
     public Controller getController(){
         return this.gameController;
+    }
+
+    public Uno startGame(String name, Card card){
+        this.topCard = card;
+        return this;
     }
 }
