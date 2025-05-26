@@ -13,9 +13,11 @@ public abstract class Card {
     public String colour(){
         return colour;
     }
+    
     public Integer number(){
         return -1;
     }
+    
     public boolean isCantada(){ return cantada; }
     public Card asUno(){
         cantada = true;
@@ -23,8 +25,10 @@ public abstract class Card {
     }
 
     public abstract boolean playAgainst(Card other);
-    public abstract void plays(Uno game, Player player);
-//    public abstract void startGame(Uno game);
+    public abstract void plays(Uno game);
+    public void startGame(Uno game) {}
+
+    
 
 }
 
@@ -37,8 +41,7 @@ class ColouredCard extends Card {
         return true;
     }
 
-    public void plays(Uno game, Player player) {}
-//    public void startGame(Uno game) {}
+    public void plays(Uno game) {}
 }
 
 class NumberedCard extends Card {
@@ -57,8 +60,7 @@ class NumberedCard extends Card {
         return other.number().equals(this.number()) || other.colour().equals(this.colour());
     }
 
-    public void plays(Uno game, Player player) {}
-//    public void startGame(Uno game) {}
+    public void plays(Uno game) {}
 
 }
 
@@ -84,10 +86,10 @@ class WildCard extends Card {
         return true;
     }
 
-    public void plays(Uno game, Player player) {
+    public void plays(Uno game) {
         throw new RuntimeException("Cannot play WildCard as itself");
     }
-//    public void startGame(Uno game) {}
+
 }
 
 class Draw2Card extends Card {
@@ -100,18 +102,17 @@ class Draw2Card extends Card {
         return other.colour().equals(this.colour()) || other.getClass().equals(this.getClass());
     }
 
-    public void plays(Uno game, Player player) {
-
-//        game.takeTwo(game.getController().whoIsNext(game));
-        game.takeTwo(player);
+    public void plays(Uno game) {
+        game.takeTwo(game.getController().whoIsNext(game));
         game.setCurrentPlayer(game.getController().whoIsNext(game));
 
     }
 
-//    public void startGame(Uno game) {
-//        game.takeTwo(game.getCurrentPlayer());
-//        game.setCurrentPlayer(game.getController().whoIsNext(game));
-//    }
+    @Override
+    public void startGame(Uno game) {
+        game.takeTwo(game.getCurrentPlayer());
+        game.setCurrentPlayer(game.getController().whoIsNext(game));
+    }
 }
 
 class ReverseCard extends Card {
@@ -124,15 +125,15 @@ class ReverseCard extends Card {
         return other.colour().equals(this.colour()) || other.getClass().equals(this.getClass());
     }
 
-    public void plays(Uno game, Player player) {
+    public void plays(Uno game) {
         game.setController(game.getController().changeController());
-        game.setCurrentPlayer(player);
     }
 
-//    public void startGame(Uno game) {
-//        game.setController(game.getController().changeController());
-//        game.setCurrentPlayer(game.getController().whoIsNext(game));
-//    }
+    @Override
+    public void startGame(Uno game) {
+        game.setController(game.getController().changeController());
+        game.setCurrentPlayer(game.getController().whoIsNext(game));
+    }
 }
 
 class SkipCard extends Card {
@@ -145,12 +146,13 @@ class SkipCard extends Card {
         return other.colour().equals(this.colour()) || other.getClass().equals(this.getClass());
     }
 
-    public void plays(Uno game, Player player) {
+    public void plays(Uno game) {
         game.setCurrentPlayer(game.getController().whoIsNext(game));
     }
 
-//    public void startGame(Uno game) {
-//        game.setCurrentPlayer(game.getController().whoIsNext(game));
-//    }
+    @Override
+    public void startGame(Uno game) {
+        game.setCurrentPlayer(game.getController().whoIsNext(game));
+    }
 
 }
