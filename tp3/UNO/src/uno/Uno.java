@@ -25,8 +25,8 @@ public class Uno {
             throw new RuntimeException("Card Deck not sufficient to play");
         }
 
-        this.topCard = cardDeck.getFirst();// hay que llamar a topCard.startGame() --> condiciones
-        createPlayers(playerNames, cardsPerPlayer, cardDeck);  // Ver de cambiar el nombre porque la funcion tamb reparte
+        this.topCard = cardDeck.getFirst();
+        createPlayers(playerNames, cardsPerPlayer, cardDeck); 
         assignPlayers(playerNames.size(), playerNames);
         currentPlayer = playerMap.get(playerNames.get(0));
         this.gameController = new RightController();
@@ -49,8 +49,6 @@ public class Uno {
         this.remainingCards = new ArrayList<>(
                 cardDeck.subList(currentIndex.get(), cardDeck.size())
         );
-
-        //remainingCards.stream().forEach(cardd -> System.out.println(cardd));
 
 
     }
@@ -77,7 +75,6 @@ public class Uno {
 
     public Uno plays(String player1, Card card){
 
-        // sale con polimorfismo
         if (!endGame){
             currentPlayer = currentPlayer.plays(card, this);
             return this;
