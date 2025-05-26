@@ -25,9 +25,9 @@ public class Player {
     private boolean removeOneWildCard() {
         Optional<Card> wild = cards.stream()
                 .filter(c -> c instanceof WildCard)
-                .findFirst();            // buscamos la primera WildCard
-        wild.ifPresent(cards::remove);                      // si existe, la removemos
-        return wild.isPresent();                            // indicamos si había o no
+                .findFirst();
+        wild.ifPresent(cards::remove);
+        return wild.isPresent();
     }
 
 
@@ -44,7 +44,7 @@ public class Player {
         }
         boolean playable = card.playAgainst(game.viewCard());
 
-        // con polimorfismo sale playable como objeto llamamos playable.plays(game, card, this)
+
         if (playable) {
             cards.remove(card);
             card.plays(game);
@@ -54,12 +54,12 @@ public class Player {
                 game.takeTwo(this);
             }
         } else{
-            // levanta dos cartas
+
             game.takeTwo(this);
 
         }
 
-        //
+
         if (cards.isEmpty()){
             game.setWinner(name);
         }
