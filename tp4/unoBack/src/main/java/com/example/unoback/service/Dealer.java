@@ -16,20 +16,21 @@ public class Dealer {
         deck.addAll(cardsOn("Blue"));
         deck.addAll(cardsOn("Green"));
         deck.addAll(cardsOn("Yellow"));
-        Collections.shuffle(deck);
+//        Collections.shuffle(deck);
         return deck;
     }
 
     private List<Card> cardsOn(String colour) {
-        return List.of(new WildCard(),
-                new SkipCard(colour),
-                new Draw2Card(colour),
-                new ReverseCard(colour),
+        return List.of(
                 new NumberCard(colour, 1),
                 new NumberCard(colour, 2),
                 new NumberCard(colour, 3),
                 new NumberCard(colour, 4),
                 new NumberCard(colour, 5),
-                new NumberCard(colour, 6));
+                new NumberCard(colour, 6),
+                new WildCard(),
+                new SkipCard(colour),
+                new Draw2Card(colour),
+                new ReverseCard(colour));
     }
 }
