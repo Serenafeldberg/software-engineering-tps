@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Uno {
     Card topCard;
-    HashMap<String, Player> playerMap = new HashMap<>();
     List<Card> remainingCards = new ArrayList<>();
     Player currentPlayer;
     String winner;
@@ -25,47 +25,40 @@ public class Uno {
             throw new RuntimeException("Card Deck not sufficient to play");
         }
 
-        this.topCard = cardDeck.getFirst();// hay que llamar a topCard.startGame() --> condiciones
-        createPlayers(playerNames, cardsPerPlayer, cardDeck);  // Ver de cambiar el nombre porque la funcion tamb reparte
-        assignPlayers(playerNames.size(), playerNames);
-        currentPlayer = playerMap.get(playerNames.get(0));
+        this.topCard = cardDeck.getFirst();
+        List<Player> playerList = createPlayers(playerNames, cardsPerPlayer, cardDeck);
+        assignPlayers(playerList);
+        this.currentPlayer  = playerList.get(0);
+        int dealtCount      = cardsPerPlayer * playerNames.size();
+        this.remainingCards = new ArrayList<>(
+                cardDeck.subList(1 + dealtCount, cardDeck.size())
+        );
+
         this.gameController = new RightController();
         this.topCard.startGame(this);
 
     }
 
-    private void createPlayers(List<String> playerNames, Integer cardsPerPlayer, List<Card> cardDeck) {
+    private List<Player> createPlayers(List<String> playerNames, Integer cardsPerPlayer, List<Card> cardDeck) {
         AtomicInteger currentIndex = new AtomicInteger(1);
-        playerNames
-                .forEach(name -> {
+        return playerNames.stream()
+                .map(name -> {
                     int start = currentIndex.get();
                     int end   = Math.min(start + cardsPerPlayer, cardDeck.size());
                     List<Card> hand = new ArrayList<>(cardDeck.subList(start, end));
                     currentIndex.set(end);
-
-                    playerMap.put(name, new Player(hand, name));
-                });
-
-        this.remainingCards = new ArrayList<>(
-                cardDeck.subList(currentIndex.get(), cardDeck.size())
-        );
-
-        //remainingCards.stream().forEach(cardd -> System.out.println(cardd));
-
-
+                    return new Player(hand, name);
+                })
+                .collect(Collectors.toList());
     }
 
-    private void assignPlayers(int n, List<String> playerNames) {
+    private void assignPlayers(List<Player> playerList) {
+        int n = playerList.size();
         IntStream.range(0, n)
                 .forEach(i -> {
-                    String name     = playerNames.get(i);
-                    String prevName = playerNames.get((i - 1 + n) % n);
-                    String nextName = playerNames.get((i + 1) % n);
-
-                    Player p    = playerMap.get(name);
-                    Player prev = playerMap.get(prevName);
-                    Player next = playerMap.get(nextName);
-
+                    Player p    = playerList.get(i);
+                    Player prev = playerList.get((i - 1 + n) % n);
+                    Player next = playerList.get((i + 1) % n);
                     p.setPrev(prev);
                     p.setNext(next);
                 });
@@ -77,7 +70,6 @@ public class Uno {
 
     public Uno plays(String player1, Card card){
 
-        // sale con polimorfismo
         if (!endGame){
             currentPlayer = currentPlayer.plays(card, this);
             return this;
@@ -98,14 +90,12 @@ public class Uno {
     }
 
 
-    public Uno takeTwo(Player player) {
+    public void takeTwo(Player player) {
         int toTake = Math.min(2, remainingCards.size());
         List<Card> cardsToTake = new ArrayList<>(remainingCards.subList(0, toTake));
         cardsToTake.forEach(player::addCard);
         remainingCards.subList(0, toTake).clear();
-        return this;
     }
-
 
 
     public Player getCurrentPlayer(){
@@ -122,7 +112,7 @@ public class Uno {
 
     public void setWinner(String winner){
         this.winner = winner;
-        this.endGame = true; // esto haria un new UnoGanado()
+        this.endGame = true;
     }
 
     public String winner(){
