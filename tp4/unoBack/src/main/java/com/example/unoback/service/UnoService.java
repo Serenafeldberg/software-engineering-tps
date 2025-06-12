@@ -6,10 +6,7 @@ import com.example.unoback.model.Match;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UnoService {
@@ -32,22 +29,30 @@ public class UnoService {
         currentMatch.play(playerName, cardToPlay);
     }
 
-//    public void drawCard(UUID matchId, String playerName) {
-//        Match currentMatch = sessions.get(matchId);
-//        if (currentMatch == null) {
-//            throw new IllegalArgumentException("Match with ID " + matchId + " not found.");
-//        }
-//        // Llama al método drawCard del objeto Match
-//        currentMatch.drawCard(playerName);
-//        // No se imprime nada en consola
-//    }
-//
+    public void drawCard(UUID matchId, String playerName) {
+        Match currentMatch = sessions.get(matchId);
+        if (currentMatch == null) {
+            throw new IllegalArgumentException("Match with ID " + matchId + " not found.");
+        }
+        currentMatch.drawCard(playerName);
+    }
+
     public JsonCard getActiveCard(UUID matchId) {
         Match currentMatch = sessions.get(matchId);
         if (currentMatch == null) {
             throw new IllegalArgumentException("Match with ID " + matchId + " not found.");
         }
         return currentMatch.activeCard().asJson();
+    }
+
+    public List<JsonCard> getHand(UUID matchId) {
+        Match currentMatch = sessions.get(matchId);
+        if (currentMatch == null) {
+            throw new IllegalArgumentException("Match with ID " + matchId + " not found.");
+        }
+        return currentMatch.playerHand().stream()
+                .map(Card::asJson)
+                .collect(java.util.stream.Collectors.toList());
     }
 //
 //    public List<JsonCard> getPlayerHand(UUID matchId, String playerName) {

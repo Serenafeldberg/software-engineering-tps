@@ -24,12 +24,6 @@ public class UnoController {
     @Autowired
     UnoService unoService;
 
-    @GetMapping("/hola")
-    public ResponseEntity<String> holaMundo() {
-        return new ResponseEntity<>("respuesta a Hola Mundo", HttpStatus.OK);
-    }
-
-
     @PostMapping("newmatch")
     public ResponseEntity newMatch(@RequestParam List<String> players) {
         return ResponseEntity.ok(unoService.newMatch(players));
@@ -37,41 +31,24 @@ public class UnoController {
 
     @PostMapping("play/{matchId}/{player}")
     public ResponseEntity play( @PathVariable UUID matchId, @PathVariable String player, @RequestBody JsonCard card ) {
-        try {
-            unoService.playCard(matchId, player, card);
-            return ResponseEntity.ok().build();
-
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (RuntimeException e) {
-            if (e.getMessage() != null) {
-                if (e.getMessage().contains(Match.NotACardInHand) ||
-                        e.getMessage().contains(Match.CardDoNotMatch) ||
-                        e.getMessage().contains(NotPlayersTurn)) { // Si intentas jugar en una partida terminada CHEQUEAR GAMEOVER
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-                } else {
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected game rule error occurred: " + e.getMessage(), e);
-                }
-            }
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unknown error occurred.", e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred: " + e.getMessage(), e);
-        }
+        unoService.playCard(matchId, player, card);
+        return ResponseEntity.ok().build();
     }
 
-//    @PostMapping("draw/{matchId}/{player}")
-//    public ResponseEntity drawCard( @PathVariable UUID matchId, @RequestParam String player ) {
-//
-//    }
+    @PostMapping("draw/{matchId}/{player}")
+    public ResponseEntity drawCard( @PathVariable UUID matchId, @RequestParam String player ) {
+        unoService.drawCard(matchId, player);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("activecard/{matchId}")
     public ResponseEntity activeCard( @PathVariable UUID matchId ) {
         return ResponseEntity.ok(unoService.getActiveCard(matchId));
     }
-//
-//    @GetMapping("playerhand/{matchId}")
-//    public ResponseEntity playerHand( @PathVariable UUID matchId ) {
-//
-//    }
+
+    @GetMapping("playerhand/{matchId}")
+    public ResponseEntity playerHand( @PathVariable UUID matchId ) {
+        return ResponseEntity.ok(unoService.getHand(matchId));
+    }
 
 }
