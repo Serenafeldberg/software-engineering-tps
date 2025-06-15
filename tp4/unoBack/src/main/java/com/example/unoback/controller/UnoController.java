@@ -16,38 +16,42 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.UUID;
 
-import com.example.unoback.model.Match;
-import static com.example.unoback.model.Player.NotPlayersTurn;
-
 @RestController
 public class UnoController {
     @Autowired
     UnoService unoService;
 
     @PostMapping("newmatch")
-    public ResponseEntity newMatch(@RequestParam List<String> players) {
+    public ResponseEntity<UUID> newMatch(@RequestBody List<String> players) {
         return ResponseEntity.ok(unoService.newMatch(players));
     }
 
     @PostMapping("play/{matchId}/{player}")
-    public ResponseEntity play( @PathVariable UUID matchId, @PathVariable String player, @RequestBody JsonCard card ) {
+    public ResponseEntity<Void> play(
+                                      @PathVariable UUID matchId,
+                                      @PathVariable String player,
+                                      @RequestBody JsonCard card
+    ) {
         unoService.playCard(matchId, player, card);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("draw/{matchId}/{player}")
-    public ResponseEntity drawCard( @PathVariable UUID matchId, @RequestParam String player ) {
+    public ResponseEntity<Void> drawCard(
+            @PathVariable UUID matchId,
+            @PathVariable String player
+    ) {
         unoService.drawCard(matchId, player);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("activecard/{matchId}")
-    public ResponseEntity activeCard( @PathVariable UUID matchId ) {
+    public ResponseEntity<JsonCard> activeCard(@PathVariable UUID matchId) {
         return ResponseEntity.ok(unoService.getActiveCard(matchId));
     }
 
     @GetMapping("playerhand/{matchId}")
-    public ResponseEntity playerHand( @PathVariable UUID matchId ) {
+    public ResponseEntity<List<JsonCard>> playerHand(@PathVariable UUID matchId) {
         return ResponseEntity.ok(unoService.getHand(matchId));
     }
 
