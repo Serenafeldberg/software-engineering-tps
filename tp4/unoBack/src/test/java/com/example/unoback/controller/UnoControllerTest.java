@@ -81,41 +81,6 @@ public class UnoControllerTest {
         when(dealer.fullDeck()).thenReturn(fullDeck());
     }
 
-
-//    @Test
-//    void playWrongTurnTest() throws Throwable{
-//        String uuid = newGame();
-//        System.out.println("UUID string: '" + uuid + "'");
-//        assertNotNull(UUID.fromString(uuid));
-//
-//        List<JsonCard> cards = activeHand(uuid);
-//        String resp = mockMvc.perform(post("/play/" + uuid + "/Santiago")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(cards.getFirst().toString()))
-//                .andDo(print())
-//                .andExpect(status().is(500))
-//                .andReturn().getResponse().getContentAsString();
-//
-//        assertEquals(Player.NotPlayersTurn + "Santiago", resp);
-//    }
-//
-//    private String newGame() throws Exception{
-//        String resp = mockMvc.perform(post("/newmatch?players=Serena&players=Santiago"))
-//                .andExpect(status().isOk())
-//                .andReturn().getResponse().getContentAsString();
-//
-//        System.out.println(resp);
-//        return new ObjectMapper().readTree(resp).asText();
-//    }
-//
-//    private List<JsonCard> activeHand(String uuid) throws Exception{
-//        String resp = mockMvc.perform(get("/playerhand/" + uuid))
-//                .andExpect(status().isOk())
-//                .andReturn().getResponse().getContentAsString();
-//
-//        return new ObjectMapper().readValue(resp, new TypeReference<List<JsonCard>>(){});
-//    }
-
     @Test
     public void test01ValidMatch() throws Exception {
         UUID expectedUuid = UUID.randomUUID();
